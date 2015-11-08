@@ -5,7 +5,7 @@
   "name": "flib",
   "description": "common utilities library",
   "license": "(MIT OR Apache-2.0)",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "http://github.com/gdefacci",
   "main":"index.js",
   "files":[
@@ -19,5 +19,9 @@
   ],
   "scripts":{
     "prepublish" : "tsc -p src --outDir ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gdefacci/flib.git"
   }
 }
