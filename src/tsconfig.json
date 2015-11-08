@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+                "module":"commonjs",
+                "target": "es5",
+                "moduleResolution": "node",
+                "declaration": true,
+                "sourceMap": true
+	},
+	"files": [
+                "lib/fail.ts",
+                "lib/isNull.ts",
+                "lib/lazy.ts",
+                "lib/Arrays.ts",
+                "lib/JsMap.ts",
+                "lib/Option.ts",
+		            "index.ts"
+	]
+}
