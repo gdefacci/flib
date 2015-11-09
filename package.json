@@ -1,14 +1,11 @@
 {
-  "devDependencies": {
-    "typescript": "1.6.2"
-  },
   "name": "flib",
   "description": "common utilities library",
   "license": "(MIT OR Apache-2.0)",
   "version": "0.1.1",
   "author": "http://github.com/gdefacci",
-  "main":"index.js",
-  "files":[
+  "main": "index.js",
+  "files": [
     "*.js",
     "*.ts",
     "*.js.map",
@@ -17,11 +14,16 @@
     "lib/**/*.js.map",
     "src/**/*.ts"
   ],
-  "scripts":{
-    "prepublish" : "tsc -p src --outDir ."
+  "scripts": {
+    "clean": "rimraf index.js* index.d.ts lib",
+    "prepublish": "tsc -p src --outDir ."
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/gdefacci/flib.git"
+  },
+  "devDependencies": {
+    "rimraf": "2.4.3",
+    "typescript": "1.6.2"
   }
 }
