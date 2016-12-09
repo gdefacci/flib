@@ -11,7 +11,9 @@ module Arrays {
   }
 
   export function find<A>(arr: A[], pred: (a: A) => boolean): Option<A> {
-    return findIndex(arr, pred).map( idx => arr[idx] )
+    const opt = findIndex<A>(arr, pred)
+    if (opt.isDefined()) return opt.map<A>( idx => arr[idx] )
+    else return Option.None
   }
 
   export function findIndex<A>(arr: A[], pred: (a: A) => boolean): Option<number> {
@@ -19,7 +21,7 @@ module Arrays {
       const v = arr[i]
       if (pred(v)) return Option.some<number>(i)
     }
-    return Option.none<number>();
+    return Option.None;
   }
 
   export function split<A>(arr:A[], pred:(a:A) => boolean):[A[], A[]] {

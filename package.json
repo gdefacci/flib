@@ -15,15 +15,23 @@
     "src/**/*.ts"
   ],
   "scripts": {
-    "clean": "rimraf index.js* index.d.ts lib",
-    "prepublish": "tsc -p src --outDir ."
+    "clean": "rimraf index.js* index.d.ts lib test",
+    "prepublish": "tsc -p src --outDir .",
+    "test": "jasmine-node --verbose --color test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/gdefacci/flib.git"
   },
   "devDependencies": {
-    "rimraf": "2.4.3",
-    "typescript": "1.6.2"
+    "rimraf": "2.5.2",
+    "jasmine-core": "^2.5.2",
+    "jasmine": "^2.5.2",
+    "typescript": "2.1.4"
+  },
+  "types": "index.d.ts",
+  "dependencies": {
+    "@types/es6-promise": "0.0.32",
+    "@types/jasmine": "^2.5.38"
   }
 }

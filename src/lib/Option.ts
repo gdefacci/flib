@@ -1,81 +1,56 @@
-export abstract class Option<A> {
-  static some<T>(v: T): Option<T> {
-    return new SomeImpl<T>(v)
+class Option<T> {
+  public static None = new Option<any>(null);
+  public static some<T>(t:T):Option<T> {
+    return new Option<T>(t)
   }
-  static none<T>(): Option<T> {
-    return None.instance;
+  public static option<T>(v:T|null|undefined):Option<T> {
+    return new Option<T>(v);
   }
-  static option<T>(t: T): Option<T> {
-    return (t !== null && t !== undefined) ? Option.some<T>(t) : Option.none<T>();
-  }
-  
-  fold<B>(fnone: () => B, fsome: (v: A) => B): B {
-    return fnone()
-  }
-  map<B>(f: (t: A) => B): Option<B> {
-    return Option.none<B>()
-  }
-  forEach<B>(f: (t: A) => void): void {
-  }
-  flatMap<B>(f: (t: A) => Option<B>): Option<B> {
-    return Option.none<B>()
-  }
-  getOrElse(f: () => A): A {
-    return f()
-  }
-  orElse(f: () => Option<A>): Option<A> {
-    return f()
+
+  constructor(public value: T | null | undefined) {
   }
   isEmpty(): boolean {
-    return true
+    return this.value === null || this.value === undefined
   }
-  isDefined(): boolean {
-    return false
+  isDefined() {
+    return !this.isEmpty()
   }
-  zip<A>(b: Option<A>): Option<[A, A]> {
-    return Option.none<[A, A]>()
+  fold<B>(fnone: () => B, fsome: (some: T) => B): B {
+    return (this.value === null || this.value === undefined) ? fnone() : fsome(this.value)
   }
-  toArray(): A[] {
-    return []
+  forEach(f: (a: T) => void): void {
+    if (!(this.value === null || this.value === undefined)) f(this.value)
   }
-}
+  map<B>(f: (a: T) => B): Option<B> {
+    return this.fold<Option<B>>(() => Option.None, v => new Option<B>(f(v)))
+  }
+  flatMap<B>(f: (a: T) => Option<B>): Option<B> {
+    return this.fold<Option<B>>(() => Option.None, v => f(v))
+  }
+  getOrElse<B>(f: () => B): T | B {
+    return this.fold<T | B>(() => f(), v => v)
 
-class None<A> extends Option<A> {
-  static instance = new None<any>()
-}
+  }
+  orElse<B>(f: () => Option<B>): Option<T | B> {
+    return this.fold<Option<T | B>>(f, v => new Option<T>(v))
+  }
 
-class SomeImpl<A> extends Option<A> {
-  constructor(public value: A) { 
-    super() 
+  zip<B>(b: Option<B>): Option<[T, B]> {
+    if (this.value !== null && this.value !== undefined) {
+      const v:T = this.value
+      return b.map( (b1: B) => {
+        const r:[T, B] = [v, b1]
+        return r;
+      })
+    } else {
+      return Option.None;
+    }
   }
-  isEmpty(): boolean { return false }
-  isDefined(): boolean { return true }
-  fold<B>(fnone: () => B, fsome: (some: A) => B): B {
-    return fsome(this.value)
-  }
-  forEach<B>(f: (a: A) => void): void {
-    f(this.value)
-  }
-  map<B>(f: (a: A) => B): Option<B> {
-    return Option.some<B>(f(this.value))
-  }
-  flatMap<B>(f: (a: A) => Option<B>): Option<B> {
-    return f(this.value)
-  }
-  getOrElse(f: () => A): A {
-    return this.value;
-  }
-  orElse(f: () => Option<A>): Option<A> {
-    return this;
-  }
-  zip<B>(b: Option<B>): Option<[A, B]> {
-    return b.map<[A, B]>(t1 => [this.value, t1])
-  }
-  toArray(): A[] {
-    return [this.value]
+  toArray(): T[] {
+    return this.fold<T[]>(() => [], v => [v])
   }
   toString(): string {
-    return `Some(${this.value})`
+    return this.fold(() => "None", v => `Some(${v})`)
   }
 }
 

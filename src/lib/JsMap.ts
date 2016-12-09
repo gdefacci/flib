@@ -1,10 +1,10 @@
 interface JsMap<A> {
-  [s:string]:A  
+  [s:string]:A
 }
 
 module JsMap  {
   export type Entry<T> = {key:string, value:T}
-  
+
   export function create<T>(kps:Entry<T>[]) {
     const res:JsMap<T> = {}
     kps.forEach( kp => res[kp.key] = kp.value);

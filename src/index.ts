@@ -3,6 +3,8 @@ export {default as JsMap} from "./lib/JsMap"
 export {default as Option} from "./lib/Option"
 export {default as lazy} from "./lib/lazy"
 export {default as fail} from "./lib/fail"
+export {default as Either} from "./lib/Either"
+export {default as Try} from "./lib/Try"
 
 import isNull from "./lib/isNull"
 
