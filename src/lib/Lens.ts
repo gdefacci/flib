@@ -5,7 +5,6 @@ export interface Accessors<S, A> {
   set: (a: A) => (s: S) => S
 }
 
-
 function accessors<S, K extends keyof S>(k: K, objectCopy: <T>(v: T) => T): Accessors<S, S[K]> {
   return {
     get: (s: S) => s[k],
@@ -17,30 +16,27 @@ function accessors<S, K extends keyof S>(k: K, objectCopy: <T>(v: T) => T): Acce
   }
 }
 
-function objectAssign<A, B>(target: A, source: B): A & B {
-  const output = <any>target;
-  if (source !== undefined && source !== null) {
-    for (const nextKey in source) {
-      if (source.hasOwnProperty(nextKey)) {
-        output[nextKey] = source[nextKey];
+function copy<A>(source: A): A  {
+  if (Array.isArray(source)) {
+    return <any>source.concat([])
+  } else if (typeof source === "object") {
+    const output = <any>{};
+    if (source !== undefined && source !== null) {
+      for (const nextKey in source) {
+        if (source.hasOwnProperty(nextKey)) {
+          output[nextKey] = source[nextKey];
+        }
       }
     }
+    return output;
+  } else {
+    return source;
   }
-  return output;
 }
 
-export function copy<A>(a: A): A {
-  return objectAssign({}, a)
-}
 
 export function overwrite<A>(a:A):A {
   return a;
-}
-
-function update<S, A, FA, FS>(accessors: Accessors<S, A>, fmap: <A, B>(a: FA, f: (a: A) => B) => FS, f: (a: A) => FA): (s: S) => FS {
-  return s => {
-    return fmap(f(accessors.get(s)), (v: A) => accessors.set(v)(s))
-  }
 }
 
 export function optionFMap<A, B>(a: Option<A>, f: (a: A) => B) {
@@ -61,14 +57,29 @@ function accessorsCompose<S, A, B>(acc1: Accessors<S, A>, acc2: Accessors<A, B>)
   return { get, set }
 }
 
-export class Lens<S, A> {
+function update<S, A, FA, FS>(accessors: Accessors<S, A>, fmap: <A, B>(a: FA, f: (a: A) => B) => FS, f: (a: A) => FA): (s: S) => FS {
+  return s => {
+    return fmap(f(accessors.get(s)), (v: A) => accessors.set(v)(s))
+  }
+}
+
+export class Lens<S, A> implements Accessors<S,A> {
   static create<S, K extends keyof S>(k: K, objectCopy:<T>(v:T) => T = copy): Lens<S, S[K]> {
     return new Lens<S,S[K]>(accessors<S,K>(k, objectCopy))
   }
   static lensed<T>(sample:T,  objectCopy: <T>(v: T) => T = copy):Lensed<T> {
     return lensed(sample, objectCopy)
   }
-
+  static append<A>():Accessors<A[],A[]> {
+    const get: (s: A[]) => A[] = s => s
+    const set: (a: A[]) => (s: A[]) => A[] = a => s => s.concat(a)
+    return {get, set}
+  }
+  static prepend<A>():Accessors<A[],A[]> {
+    const get: (s: A[]) => A[] = s => s
+    const set: (a: A[]) => (s: A[]) => A[] = a => s => a.concat(s)
+    return {get, set}
+  }
   constructor(private accessors: Accessors<S, A>) {
   }
   get: (s: S) => A = this.accessors.get

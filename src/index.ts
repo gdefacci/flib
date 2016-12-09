@@ -5,7 +5,5 @@ export {default as lazy} from "./lib/lazy"
 export {default as fail} from "./lib/fail"
 export {default as Either} from "./lib/Either"
 export {default as Try} from "./lib/Try"
-
-import isNull from "./lib/isNull"
-
-export {isNull}
+export {Lens, Lensed} from "./lib/Lens"
+export {default as isNull} from "./lib/isNull"
